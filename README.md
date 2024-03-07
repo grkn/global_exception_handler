@@ -81,6 +81,12 @@ public class CustomGenerator implements ResponseGenerator {
 }
 ```
 
+## Restrictions
+
+* Spring context is necessary (Other than spring applications it will not work)
+* Jackson is mandotary.
+* You can check all dependencies in pom.xml which is provided only. You can simply remove them and use them
+
 
 
 
