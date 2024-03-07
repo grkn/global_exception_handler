@@ -10,7 +10,15 @@ It is a global exception handler mechanism which helps user to catch error in AN
 
 ## Usage of Library
 
-1- First enable library with @EnableSingleException that helps to load other related configs.
+```
+<dependency>
+    <groupId>com.tgf.exception</groupId>
+    <artifactId>handler</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+1- First add dependecy to your project. Also enable library with @EnableSingleException that helps to load other related configs.
 
 2- Just select a exception which all exceptions will be converted by simply adding @SelectedException(exception = GlobalException.class)
 
@@ -72,6 +80,7 @@ public class CustomGenerator implements ResponseGenerator {
     }
 }
 ```
+
 
 
 
