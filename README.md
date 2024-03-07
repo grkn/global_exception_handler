@@ -10,14 +10,21 @@ It is a global exception handler mechanism which helps user to catch error in AN
 
 ## Usage of Library
 
+1- First enable library with @EnableSingleException that helps to load other related configs.
+
+2- Just select a exception which all exceptions will be converted by simply adding @SelectedException(exception = GlobalException.class)
 
 ```
 @EnableSingleException
 @SelectedException(exception = GlobalException.class)
+@Configuration
 public class Config {
 }
+```
 
+3- After you enable it. You have to create a custom exception which must implements SingleException.
 
+```
 public class GlobalException extends RuntimeException implements SingleException {
 
     private JsonNode errorResponse;
@@ -41,5 +48,31 @@ public class GlobalException extends RuntimeException implements SingleException
     }
 }
 ```
+
+4- Error response is unstructured data and depend on your implementation as well. Basic response is supported as below response.
+
+```
+{
+    "method": "GET",
+    "path": "/tgf/data",
+    "time": "2024-03-08T01:44:15.4385552",
+    "msg": "Request processing failed: com.to.go.fit.exception.GlobalException: Test",
+    "status": 500
+}
+```
+
+ 5- If you create a bean which implements ResponseGenerator then you can customize your error response.
+ 
+```
+@Component
+public class CustomGenerator implements ResponseGenerator {
+    @Override
+    public JsonNode apply(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, JsonNode jsonNode, String message) {
+        // you can return Array or object or whatever which will be converted to json.
+    }
+}
+```
+
+
 
 
