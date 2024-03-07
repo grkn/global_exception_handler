@@ -11,16 +11,18 @@ It is a global exception handler mechanism which helps user to catch error in AN
 ## Usage of Library
 
 '''
+
 @EnableSingleException
 @SelectedException(exception = GlobalException.class)
 public class Config {
-  //...
 }
 
 
 public class GlobalException extends RuntimeException implements SingleException {
+
     private JsonNode errorResponse;
     private String message = "";
+    
     @Override
     public JsonNode getErrorResponse() {
         return errorResponse;
@@ -33,10 +35,12 @@ public class GlobalException extends RuntimeException implements SingleException
     public String getMessage() {
         return message;
     }
+    
     public void setMessage(String message) {
         this.message = message;
     }
 }
+
 '''
 
 
