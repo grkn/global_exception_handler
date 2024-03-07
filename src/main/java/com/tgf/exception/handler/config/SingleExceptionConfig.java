@@ -66,12 +66,14 @@ public class SingleExceptionConfig {
 
                     // If status of response is 4xx or 5xx it is a client side or response side error...
                     if (HttpStatus.resolve(httpServletResponse.getStatus()).isError() && !httpServletResponse.isCommitted()) {
-                        sendErrorResponse(httpServletRequest, httpServletResponse);
+                        RuntimeException runtimeException = HttpStatus.resolve(httpServletResponse.getStatus()).is4xxClientError() ?
+                                new RuntimeException("Client side error") : new RuntimeException("Server side error");
+                        sendErrorResponse(httpServletRequest, httpServletResponse, runtimeException);
                     }
                 } catch (Throwable throwable) {
                     if (!httpServletResponse.isCommitted()) {
                         // If exception is thrown from anywhere, catching exception to convert it GlobalException which implements SingleException
-                        sendErrorResponse(httpServletRequest, httpServletResponse);
+                        sendErrorResponse(httpServletRequest, httpServletResponse, throwable);
                     }
                 }
             }
@@ -79,13 +81,18 @@ public class SingleExceptionConfig {
         return registrationBean;
     }
 
-    private void sendErrorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+    private void sendErrorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Throwable throwable) throws IOException {
         try {
+            String detailMessage = "";
+            if (throwable != null) {
+                // Not handled or unexcepted error = 500
+                httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                // Get message
+                detailMessage = throwable.getMessage();
+            }
             // Initialize exception class
             Exception exception = getInstanceOfExceptionClazz();
 
-            // Get message
-            String detailMessage = ExceptionHandlerUtil.getGetMessage(exception);
             // If application context has generator class, then set it or use basicGenerator
             ResponseGenerator<ObjectNode> generator =
                     responseGenerator == null ? ExceptionHandlerUtil.basicGenerator() : responseGenerator;

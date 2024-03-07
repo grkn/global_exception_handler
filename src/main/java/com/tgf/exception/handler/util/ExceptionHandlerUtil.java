@@ -24,13 +24,13 @@ public final class ExceptionHandlerUtil {
 
     public static ResponseGenerator<ObjectNode> basicGenerator() {
         ResponseGenerator<ObjectNode> generator;
-        generator = (httpServletRequest1, httpServletResponse1, jsonNode, msg) -> {
+        generator = (httpServletRequest, httpServletResponse, jsonNode, msg) -> {
             ObjectNode rootNode = (ObjectNode) jsonNode;
-            rootNode.set("method", new TextNode(httpServletRequest1.getMethod()));
-            rootNode.set("path", new TextNode(httpServletRequest1.getRequestURI()));
+            rootNode.set("method", new TextNode(httpServletRequest.getMethod()));
+            rootNode.set("path", new TextNode(httpServletRequest.getRequestURI()));
             rootNode.set("time", new TextNode(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)));
             rootNode.set("msg", new TextNode(msg));
-            rootNode.set("status", new IntNode(httpServletResponse1.getStatus()));
+            rootNode.set("status", new IntNode(httpServletResponse.getStatus()));
             return rootNode;
         };
         return generator;
